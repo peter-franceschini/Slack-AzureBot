@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using AzureBot.Services;
+using AzureBot.Models.Slack;
+using AzureBot.Services.Slack;
 
 namespace AzureBot
 {
@@ -26,6 +28,9 @@ namespace AzureBot
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<SlackSettings>(Configuration.GetSection("Slack"));
+            services.AddScoped<IHashService, HmacSha256HashService>();
+            services.AddScoped<ISignatureValidationService, SlackSignatureValidationService>();
             services.AddScoped<IVirtualMachineService, VirtualMachineService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
