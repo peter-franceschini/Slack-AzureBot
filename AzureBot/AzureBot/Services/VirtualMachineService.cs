@@ -10,7 +10,7 @@ namespace AzureBot.Services
 
         public VirtualMachineService()
         {
-            _Azure = Azure.Authenticate("Cred_file_path").WithDefaultSubscription();
+            _Azure = Azure.Authenticate(@"C:\Users\peter.franceschini\Desktop\credfile.txt").WithDefaultSubscription();
         }
 
         public void Start(string machineName)
