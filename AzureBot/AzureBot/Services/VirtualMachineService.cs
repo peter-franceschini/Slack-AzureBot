@@ -36,5 +36,11 @@ namespace AzureBot.Services
             var virtualMachines = _Azure.VirtualMachines.List();
             return virtualMachines.FirstOrDefault(v => v.Name.ToLower() == machineName.ToLower());
         }
+
+        public void Restart(string machineName)
+        {
+            var vm = GetVirtualMachineByName(machineName);
+            vm.Restart();
+        }
     }
 }
