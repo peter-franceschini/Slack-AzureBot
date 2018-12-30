@@ -6,18 +6,15 @@ namespace AzureBot.Commands.VirtualMachine
     public class RestartCommand : IVirtualMachineCommand
     {
         private IVirtualMachineService VirtualMachineService { get; set; }
-        private ICommandParseService CommandParseService { get; set; }
 
         public RestartCommand()
         {
             VirtualMachineService = new VirtualMachineService();
-            CommandParseService = new VirtualMachineCommandParseService();
         }
 
-        public bool CanExecute(string commandText)
+        public static bool CanExecute(string action)
         {
-            var command = CommandParseService.ParseCommand(commandText);
-            if (command.Action == "restart")
+            if (action == "restart")
             {
                 return true;
             }
@@ -25,11 +22,11 @@ namespace AzureBot.Commands.VirtualMachine
             return false;
         }
 
-        public void Execute(string machineName)
+        public void Execute(string target)
         {
-            if (VirtualMachineService.IsRunning(machineName))
+            if (VirtualMachineService.IsRunning(target))
             {
-                VirtualMachineService.Restart(machineName);
+                VirtualMachineService.Restart(target);
             }
         }
     }

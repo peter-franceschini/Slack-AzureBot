@@ -6,22 +6,20 @@ namespace AzureBot.Commands.VirtualMachine
     public class StartCommand : IVirtualMachineCommand
     {
         private IVirtualMachineService VirtualMachineService { get; set; }
-        private ICommandParseService CommandParseService { get; set; }
+
 
         public StartCommand()
         {
             VirtualMachineService = new VirtualMachineService();
-            CommandParseService = new VirtualMachineCommandParseService();
         }
 
-        public bool CanExecute(string commandText)
+        public static bool CanExecute(string action)
         {
-            var command = CommandParseService.ParseCommand(commandText);
-            if(command.Action == "start" 
-                || command.Action == "start up" 
-                || command.Action == "turn on" 
-                || command.Action == "power on" 
-                || command.Action == "power up")
+            if(action == "start" 
+                || action == "start up" 
+                || action == "turn on" 
+                || action == "power on" 
+                || action == "power up")
             {
                 return true;
             }
@@ -29,11 +27,11 @@ namespace AzureBot.Commands.VirtualMachine
             return false;
         }
 
-        public void Execute(string machineName)
+        public void Execute(string target)
         {
-            if (!VirtualMachineService.IsRunning(machineName))
+            if (!VirtualMachineService.IsRunning(target))
             {
-                VirtualMachineService.Start(machineName);
+                VirtualMachineService.Start(target);
             }
         }
     }

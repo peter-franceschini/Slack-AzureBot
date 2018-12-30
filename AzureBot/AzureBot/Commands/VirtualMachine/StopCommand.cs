@@ -6,21 +6,18 @@ namespace AzureBot.Commands.VirtualMachine
     public class StopCommand : IVirtualMachineCommand
     {
         private IVirtualMachineService VirtualMachineService { get; set; }
-        private ICommandParseService CommandParseService { get; set; }
 
         public StopCommand()
         {
             VirtualMachineService = new VirtualMachineService();
-            CommandParseService = new VirtualMachineCommandParseService();
         }
 
-        public bool CanExecute(string commandText)
+        public static bool CanExecute(string action)
         {
-            var command = CommandParseService.ParseCommand(commandText);
-            if (command.Action == "stop"
-                || command.Action == "power off"
-                || command.Action == "shut down"
-                || command.Action == "turn off")
+            if (action == "stop"
+                || action == "power off"
+                || action == "shut down"
+                || action == "turn off")
             {
                 return true;
             }
@@ -28,11 +25,11 @@ namespace AzureBot.Commands.VirtualMachine
             return false;
         }
 
-        public void Execute(string machineName)
+        public void Execute(string target)
         {
-            if (VirtualMachineService.IsRunning(machineName))
+            if (VirtualMachineService.IsRunning(target))
             {
-                VirtualMachineService.Stop(machineName);
+                VirtualMachineService.Stop(target);
             }
         }
     }

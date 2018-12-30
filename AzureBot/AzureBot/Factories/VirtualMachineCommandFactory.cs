@@ -4,17 +4,17 @@ namespace AzureBot.Factories
 {
     public class VirtualMachineCommandFactory : IVirtualMachineCommandFactory
     {
-        public IVirtualMachineCommand GetCommand(string slackText)
+        public IVirtualMachineCommand GetCommand(string command)
         {
-            if (new RestartCommand().CanExecute(slackText))
+            if (RestartCommand.CanExecute(command))
             {
                 return new RestartCommand();
             }
-            else if (new StartCommand().CanExecute(slackText))
+            else if (StartCommand.CanExecute(command))
             {
                 return new StartCommand();
             }
-            else if (new StopCommand().CanExecute(slackText))
+            else if (StopCommand.CanExecute(command))
             {
                 return new StopCommand();
             }

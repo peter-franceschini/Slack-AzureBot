@@ -7,7 +7,6 @@ namespace AzureBot.Commands.VirtualMachine
 {
     public interface IVirtualMachineCommand
     {
-        bool CanExecute(string commandText);
         void Execute(string machineName);
     }
 }
