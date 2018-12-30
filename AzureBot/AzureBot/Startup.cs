@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using AzureBot.Services;
 using AzureBot.Models.Slack;
 using AzureBot.Services.Slack;
+using AzureBot.Factories;
 
 namespace AzureBot
 {
@@ -32,6 +33,8 @@ namespace AzureBot
             services.AddScoped<IHashService, HmacSha256HashService>();
             services.AddScoped<ISignatureValidationService, SlackSignatureValidationService>();
             services.AddScoped<IVirtualMachineService, VirtualMachineService>();
+            services.AddScoped<IVirtualMachineCommandFactory, VirtualMachineCommandFactory>();
+            services.AddScoped<ICommandParseService, VirtualMachineCommandParseService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

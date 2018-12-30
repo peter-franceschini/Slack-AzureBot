@@ -1,5 +1,6 @@
 ﻿using AzureBot.Factories;
 using AzureBot.Models.Slack;
+using AzureBot.Services;
 using AzureBot.Services.Slack;
 using AzureBot.Utilities;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +15,14 @@ namespace AzureBot.Controllers
         private SlackSettings SlackSettings { get; set; }
         private ISignatureValidationService SignatureValidationService { get; set; }
         private IVirtualMachineCommandFactory VirtualMachineCommandFactory { get; set; }
+        private ICommandParseService CommandParseService { get; set; }
 
-        public SlashCommandController(IOptions<SlackSettings> slackSettings, ISignatureValidationService signatureValidationService, IVirtualMachineCommandFactory virtualMachineCommandFactory)
+        public SlashCommandController(IOptions<SlackSettings> slackSettings, ISignatureValidationService signatureValidationService, IVirtualMachineCommandFactory virtualMachineCommandFactory, ICommandParseService commandParseService)
         {
             SlackSettings = slackSettings.Value;
             SignatureValidationService = signatureValidationService;
             VirtualMachineCommandFactory = virtualMachineCommandFactory;
+            CommandParseService = commandParseService;
         }
 
         [HttpPost]
@@ -40,8 +43,10 @@ namespace AzureBot.Controllers
             // TODO: Move action execution to Async implementation, and send postback to Slack using response url once complete with full status
 
             // Execute command action
-            var command = VirtualMachineCommandFactory.GetCommand(slashCommandPayload.Text);
-            if(command == null)
+            var slackCommand = CommandParseService.ParseCommand(slashCommandPayload.Text);
+            var command = VirtualMachineCommandFactory.GetCommand(slackCommand.Action);
+
+            if (command == null)
             {
                 // No command was found to execute this request, send error response to Slack
                 var slashCommandErrorResponse = new SlashCommandResponse()
@@ -54,7 +59,7 @@ namespace AzureBot.Controllers
                 return Ok(slashCommandErrorResponse);
             }
 
-            command.Execute(slashCommandPayload.Text);
+            command.Execute(slackCommand.Target);
 
             // Send response to Slack
             var slashCommandResponse = new SlashCommandResponse()
@@ -69,11 +74,11 @@ namespace AzureBot.Controllers
         [HttpGet]
         [Produces("application/json")]
         // Used for testing
-        public async Task<IActionResult> Get(string commandText)
+        public async Task<IActionResult> Get(string slackText)
         {
-            var factory = new VirtualMachineCommandFactory();
-            var command = factory.GetCommand(commandText);
-            command.Execute(commandText);
+            var slackCommand = CommandParseService.ParseCommand(slackText);
+            var command = VirtualMachineCommandFactory.GetCommand(slackCommand.Action);
+            command.Execute(slackCommand.Target);
 
             return Ok();
         }
