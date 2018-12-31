@@ -1,4 +1,5 @@
 ﻿using AzureBot.Commands.VirtualMachine;
+using AzureBot.Models;
 using AzureBot.Services.AzureServices;
 
 namespace AzureBot.Factories
@@ -12,19 +13,19 @@ namespace AzureBot.Factories
             VirtualMachineService = virtualMachineService;
         }
 
-        public IVirtualMachineCommand GetCommand(string command)
+        public IVirtualMachineCommand GetCommand(VirtualMachineCommand command)
         {
-            if (RestartCommand.CanExecute(command))
+            if (RestartCommand.CanExecute(command.Action))
             {
-                return new RestartCommand(VirtualMachineService);
+                return new RestartCommand(VirtualMachineService, command);
             }
-            else if (StartCommand.CanExecute(command))
+            else if (StartCommand.CanExecute(command.Action))
             {
-                return new StartCommand(VirtualMachineService);
+                return new StartCommand(VirtualMachineService, command);
             }
-            else if (StopCommand.CanExecute(command))
+            else if (StopCommand.CanExecute(command.Action))
             {
-                return new StopCommand(VirtualMachineService);
+                return new StopCommand(VirtualMachineService, command);
             }
 
             return null;

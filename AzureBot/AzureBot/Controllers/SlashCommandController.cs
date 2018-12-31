@@ -14,15 +14,13 @@ namespace AzureBot.Controllers
     {
         private SlackSettings SlackSettings { get; set; }
         private ISignatureValidationService SignatureValidationService { get; set; }
-        private IVirtualMachineCommandFactory VirtualMachineCommandFactory { get; set; }
-        private ICommandParseService CommandParseService { get; set; }
+        private ICommandExecutionService CommandExecutionService { get; set; }
 
-        public SlashCommandController(IOptions<SlackSettings> slackSettings, ISignatureValidationService signatureValidationService, IVirtualMachineCommandFactory virtualMachineCommandFactory, ICommandParseService commandParseService)
+        public SlashCommandController(IOptions<SlackSettings> slackSettings, ISignatureValidationService signatureValidationService, ICommandExecutionService commandExecutionService)
         {
             SlackSettings = slackSettings.Value;
             SignatureValidationService = signatureValidationService;
-            VirtualMachineCommandFactory = virtualMachineCommandFactory;
-            CommandParseService = commandParseService;
+            CommandExecutionService = commandExecutionService;
         }
 
         [HttpPost]
@@ -40,13 +38,8 @@ namespace AzureBot.Controllers
                 return BadRequest();
             }
 
-            // TODO: Move action execution to Async implementation, and send postback to Slack using response url once complete with full status
-
-            // Execute command action
-            var slackCommand = CommandParseService.ParseCommand(slashCommandPayload.Text);
-            var command = VirtualMachineCommandFactory.GetCommand(slackCommand.Action);
-
-            if (command == null)
+            // Validate command and return error to Slack if the command is invalid
+            if (!CommandExecutionService.IsCommandValid(slashCommandPayload.Text))
             {
                 // No command was found to execute this request, send error response to Slack
                 var slashCommandErrorResponse = new SlashCommandResponse()
@@ -59,13 +52,14 @@ namespace AzureBot.Controllers
                 return Ok(slashCommandErrorResponse);
             }
 
-            command.Execute(slackCommand.Target);
+            // TODO: Make Async!
+            CommandExecutionService.Execute(slashCommandPayload);
 
             // Send response to Slack
             var slashCommandResponse = new SlashCommandResponse()
             {
-                ResponseType = "ephemeral",
-                Text = "Command Executed"
+                ResponseType = "in_channel",
+                Text = "Executing Command"
             };
             
             return Ok(slashCommandResponse);
@@ -74,11 +68,17 @@ namespace AzureBot.Controllers
         [HttpGet]
         [Produces("application/json")]
         // Used for testing
-        public async Task<IActionResult> Get(string slackText)
+        public async Task<IActionResult> Get()
         {
-            var slackCommand = CommandParseService.ParseCommand(slackText);
-            var command = VirtualMachineCommandFactory.GetCommand(slackCommand.Action);
-            command.Execute(slackCommand.Target);
+            var payload = new SlashCommandPayload()
+            {
+                Text = "start Demo-Server",
+            };
+
+            if (CommandExecutionService.IsCommandValid(payload.Text))
+            {
+                CommandExecutionService.Execute(payload);
+            }
 
             return Ok();
         }

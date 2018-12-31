@@ -1,16 +1,16 @@
 ﻿using AzureBot.Models;
 using AzureBot.Services.AzureServices;
-using System;
+using Microsoft.Azure.Management.Compute.Fluent;
 
 namespace AzureBot.Commands.VirtualMachine
 {
-    public class RestartCommand : IVirtualMachineCommand
+    public class PowerStateCommand : IVirtualMachineCommand
     {
         private IVirtualMachineService VirtualMachineService { get; set; }
         private VirtualMachineCommand Command { get; set; }
-        private bool Success { get; set; }
+        private PowerState PowerState { get; set; }
 
-        public RestartCommand(IVirtualMachineService virtualMachineService, VirtualMachineCommand command)
+        public PowerStateCommand(IVirtualMachineService virtualMachineService, VirtualMachineCommand command)
         {
             VirtualMachineService = virtualMachineService;
             Command = command;
@@ -18,7 +18,7 @@ namespace AzureBot.Commands.VirtualMachine
 
         public static bool CanExecute(string action)
         {
-            if (action == "restart")
+            if (action == "powerstate")
             {
                 return true;
             }
@@ -28,22 +28,12 @@ namespace AzureBot.Commands.VirtualMachine
 
         public void Execute()
         {
-            if (VirtualMachineService.IsRunning(Command.Target))
-            {
-                VirtualMachineService.Restart(Command.Target);
-            }
+            var powerState = VirtualMachineService.GetPowerState(Command.Target);
         }
 
         public string GetResultMessage()
         {
-            if (Success)
-            {
-                return $"{Command.Target} restarted";
-            }
-            else
-            {
-                return $"Unable to restart {Command.Target}";
-            }
+            return $"{Command.Target} is in power state {PowerState.ToString()}";
         }
     }
 }

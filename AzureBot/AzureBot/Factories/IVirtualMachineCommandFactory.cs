@@ -1,4 +1,5 @@
 ﻿using AzureBot.Commands.VirtualMachine;
+using AzureBot.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,6 @@ namespace AzureBot.Factories
 {
     public interface IVirtualMachineCommandFactory
     {
-        IVirtualMachineCommand GetCommand(string slackText);
+        IVirtualMachineCommand GetCommand(VirtualMachineCommand command);
     }
 }

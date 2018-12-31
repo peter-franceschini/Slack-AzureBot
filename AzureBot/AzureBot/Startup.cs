@@ -37,6 +37,7 @@ namespace AzureBot
             services.AddScoped<IVirtualMachineService, VirtualMachineService>();
             services.AddScoped<IVirtualMachineCommandFactory, VirtualMachineCommandFactory>();
             services.AddScoped<ICommandParseService, VirtualMachineCommandParseService>();
+            services.AddScoped<ICommandExecutionService, CommandExecutionService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

@@ -19,6 +19,9 @@ namespace AzureBot.Models.Slack
         public string Text { get; set; }
         public string ResponseUrl { get; set; }
 
+        public SlashCommandPayload()
+        {
+        }
         /// <summary>
         /// Builds a SlashCommandPaylod from the rawBody of a SlashCommand Post request
         /// </summary>
