@@ -14,6 +14,7 @@ using AzureBot.Services;
 using AzureBot.Models.Slack;
 using AzureBot.Services.Slack;
 using AzureBot.Factories;
+using AzureBot.Models.AzureModels;
 
 namespace AzureBot
 {
@@ -30,6 +31,7 @@ namespace AzureBot
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<SlackSettings>(Configuration.GetSection("Slack"));
+            services.Configure<AzureSettings>(Configuration.GetSection("Azure"));
             services.AddScoped<IHashService, HmacSha256HashService>();
             services.AddScoped<ISignatureValidationService, SlackSignatureValidationService>();
             services.AddScoped<IVirtualMachineService, VirtualMachineService>();

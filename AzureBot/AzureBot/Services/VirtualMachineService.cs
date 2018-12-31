@@ -1,5 +1,9 @@
-﻿using Microsoft.Azure.Management.Compute.Fluent;
+﻿using AzureBot.Models.AzureModels;
+using Microsoft.Azure.Management.Compute.Fluent;
 using Microsoft.Azure.Management.Fluent;
+using Microsoft.Azure.Management.ResourceManager.Fluent;
+using Microsoft.Azure.Management.ResourceManager.Fluent.Authentication;
+using Microsoft.Extensions.Options;
 using System.Linq;
 
 namespace AzureBot.Services
@@ -7,10 +11,18 @@ namespace AzureBot.Services
     public class VirtualMachineService : IVirtualMachineService
     {
         private IAzure _Azure { get; set; }
+        private AzureSettings AzureSettings { get; set; }
 
-        public VirtualMachineService()
+        public VirtualMachineService(IOptions<AzureSettings> azureSettings)
         {
-            _Azure = Azure.Authenticate("credfile").WithDefaultSubscription();
+            AzureSettings = azureSettings.Value;
+
+            var credentials = new AzureCredentialsFactory().FromServicePrincipal(
+                AzureSettings.ClientId,
+                AzureSettings.ClientSecret,
+                AzureSettings.TenantId, 
+                AzureEnvironment.AzureGlobalCloud);
+            _Azure = Azure.Authenticate(credentials).WithDefaultSubscription();
         }
 
         public void Start(string machineName)

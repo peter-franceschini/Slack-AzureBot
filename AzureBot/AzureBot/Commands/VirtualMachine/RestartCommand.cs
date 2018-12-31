@@ -7,9 +7,9 @@ namespace AzureBot.Commands.VirtualMachine
     {
         private IVirtualMachineService VirtualMachineService { get; set; }
 
-        public RestartCommand()
+        public RestartCommand(IVirtualMachineService virtualMachineService)
         {
-            VirtualMachineService = new VirtualMachineService();
+            VirtualMachineService = virtualMachineService;
         }
 
         public static bool CanExecute(string action)
