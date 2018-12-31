@@ -1,4 +1,4 @@
-﻿namespace AzureBot.Services
+﻿namespace AzureBot.Services.AzureServices
 {
     public interface IVirtualMachineService
     {

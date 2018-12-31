@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using AzureBot.Services;
+using AzureBot.Services.AzureServices;
 using AzureBot.Models.Slack;
 using AzureBot.Services.Slack;
 using AzureBot.Factories;

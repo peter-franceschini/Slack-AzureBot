@@ -6,7 +6,7 @@ using Microsoft.Azure.Management.ResourceManager.Fluent.Authentication;
 using Microsoft.Extensions.Options;
 using System.Linq;
 
-namespace AzureBot.Services
+namespace AzureBot.Services.AzureServices
 {
     public class VirtualMachineService : IVirtualMachineService
     {

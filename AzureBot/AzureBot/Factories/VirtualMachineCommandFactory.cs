@@ -1,5 +1,5 @@
 ﻿using AzureBot.Commands.VirtualMachine;
-using AzureBot.Services;
+using AzureBot.Services.AzureServices;
 
 namespace AzureBot.Factories
 {

@@ -1,6 +1,6 @@
 ﻿using AzureBot.Models;
 
-namespace AzureBot.Services
+namespace AzureBot.Services.AzureServices
 {
     public class VirtualMachineCommandParseService : ICommandParseService
     {

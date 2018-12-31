@@ -1,4 +1,4 @@
-﻿using AzureBot.Services;
+﻿using AzureBot.Services.AzureServices;
 using System;
 
 namespace AzureBot.Commands.VirtualMachine

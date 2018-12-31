@@ -1,6 +1,6 @@
 ﻿using AzureBot.Factories;
 using AzureBot.Models.Slack;
-using AzureBot.Services;
+using AzureBot.Services.AzureServices;
 using AzureBot.Services.Slack;
 using AzureBot.Utilities;
 using Microsoft.AspNetCore.Mvc;

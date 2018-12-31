@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AzureBot.Services
+namespace AzureBot.Services.AzureServices
 {
     public interface ICommandParseService
     {
