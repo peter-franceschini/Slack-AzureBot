@@ -38,6 +38,7 @@ namespace AzureBot
             services.AddScoped<IVirtualMachineCommandFactory, VirtualMachineCommandFactory>();
             services.AddScoped<ICommandParseService, VirtualMachineCommandParseService>();
             services.AddScoped<ICommandExecutionService, CommandExecutionService>();
+            services.AddScoped<ISlackDelayedResponseService, SlackDelayedResponseService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

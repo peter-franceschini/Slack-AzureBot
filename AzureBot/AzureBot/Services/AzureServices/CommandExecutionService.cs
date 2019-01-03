@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AzureBot.Commands.VirtualMachine;
 using AzureBot.Factories;
 using AzureBot.Models.Slack;
+using AzureBot.Services.Slack;
 
 namespace AzureBot.Services.AzureServices
 {
@@ -12,11 +12,13 @@ namespace AzureBot.Services.AzureServices
     {
         private IVirtualMachineCommandFactory VirtualMachineCommandFactory { get; set; }
         private ICommandParseService CommandParseService { get; set; }
+        private ISlackDelayedResponseService SlackDelayedResponseService { get; set; }
 
-        public CommandExecutionService(IVirtualMachineCommandFactory virtualMachineCommandFactory, ICommandParseService commandParseService)
+        public CommandExecutionService(IVirtualMachineCommandFactory virtualMachineCommandFactory, ICommandParseService commandParseService, ISlackDelayedResponseService slackDelayedResponseService)
         {
             VirtualMachineCommandFactory = virtualMachineCommandFactory;
             CommandParseService = commandParseService;
+            SlackDelayedResponseService = slackDelayedResponseService;
         }
 
         public bool IsCommandValid(string commandText)
@@ -38,8 +40,12 @@ namespace AzureBot.Services.AzureServices
             command.Execute();
 
             // Send response to slack
-
-
+            var responseModel = new SlashCommandResponse()
+            {
+                ResponseType = "in_channel",
+                Text = command.GetResultMessage()
+            };
+            SlackDelayedResponseService.SendDelayedResponse(slashCommandPayload.ResponseUrl, responseModel);
         }
     }
 }
