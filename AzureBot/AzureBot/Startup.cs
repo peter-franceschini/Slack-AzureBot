@@ -15,6 +15,8 @@ using AzureBot.Models.Slack;
 using AzureBot.Services.Slack;
 using AzureBot.Factories;
 using AzureBot.Models.AzureModels;
+using Hangfire;
+using Hangfire.MemoryStorage;
 
 namespace AzureBot
 {
@@ -40,6 +42,12 @@ namespace AzureBot
             services.AddScoped<ICommandExecutionService, CommandExecutionService>();
             services.AddScoped<ISlackDelayedResponseService, SlackDelayedResponseService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            // Hangfire 
+            services.AddHangfire(config =>
+            {
+                config.UseMemoryStorage();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +65,12 @@ namespace AzureBot
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            // Hangfire
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
+            // Set number of Hangfire retry attempts
+            GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 2 });
         }
     }
 }

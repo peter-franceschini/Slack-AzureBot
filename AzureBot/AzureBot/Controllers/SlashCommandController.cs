@@ -3,6 +3,7 @@ using AzureBot.Models.Slack;
 using AzureBot.Services.AzureServices;
 using AzureBot.Services.Slack;
 using AzureBot.Utilities;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
@@ -52,8 +53,8 @@ namespace AzureBot.Controllers
                 return Ok(slashCommandErrorResponse);
             }
 
-            // TODO: Make Async!
-            CommandExecutionService.Execute(slashCommandPayload);
+            BackgroundJob.Enqueue(() => CommandExecutionService.Execute(slashCommandPayload));
+            //CommandExecutionService.Execute(slashCommandPayload);
 
             // Send response to Slack
             var slashCommandResponse = new SlashCommandResponse()
@@ -77,7 +78,7 @@ namespace AzureBot.Controllers
 
             if (CommandExecutionService.IsCommandValid(payload.Text))
             {
-                CommandExecutionService.Execute(payload);
+                BackgroundJob.Enqueue(() => CommandExecutionService.Execute(payload));
             }
 
             return Ok();
